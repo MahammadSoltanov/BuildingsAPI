@@ -35,6 +35,11 @@ namespace BuildingsAPI.Controllers
         {
             var building = await _context.Binas.FindAsync(new object[] { id });
 
+            if(building == null)
+            {
+                return NotFound();
+            }
+
             return Ok(building.ToGeoJson());
         }
 
@@ -78,6 +83,17 @@ namespace BuildingsAPI.Controllers
             return CreatedAtAction(nameof(GetBuildingById), new { id = building.Id }, building.ToGeoJson());
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteBuildingById(int id)
+        {
+            var buildingToDelete = _context.Binas.Find(new object[] { id });
+
+            _context.Binas.Remove(buildingToDelete);
+
+            _context.SaveChanges();
+
+            return NoContent();
+        }
 
         private Polygon GetPolygonFromGeoJson(GeoJsonFeature geoJsonFeature)
         {

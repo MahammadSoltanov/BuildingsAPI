@@ -53,7 +53,7 @@ namespace BuildingsAPI.Helpers
                 geometry = new
                 {
                     type = poi.WkbGeometry.GeometryType,
-                    coordinates = poi.WkbGeometry.Coordinate
+                    coordinates = GetPointCoordinates(poi.WkbGeometry)
                 },
                 //Not all properties are mapped
                 properties = new
@@ -130,13 +130,13 @@ namespace BuildingsAPI.Helpers
         }
 
 
-        private static List<List<List<double>>> GetPolygonCoordinates(Geometry geometry)
+        private static List<List<List<double>>> GetPolygonCoordinates(Geometry polygon)
         {
 
             var coordinates = new List<List<List<double>>>();
             var secondList = new List<List<double>>();
 
-            foreach (Coordinate c in geometry.Coordinates)
+            foreach (Coordinate c in polygon.Coordinates)
             {
                 
                 var oneCoordinate = new List<double>
@@ -152,5 +152,16 @@ namespace BuildingsAPI.Helpers
 
             return coordinates;
         }
+
+        private static List<double> GetPointCoordinates(Point point)
+        {
+            var coordinates = new List<double>();
+
+            coordinates.Add(point.Coordinate.X);
+            coordinates.Add(point.Coordinate.Y);
+
+            return coordinates;
+        }
     }
 }
+    
