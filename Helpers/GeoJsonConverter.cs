@@ -1,4 +1,5 @@
 ﻿using BuildingsAPI.Models;
+using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 
@@ -15,7 +16,7 @@ namespace BuildingsAPI.Helpers
                 geometry = new
                 {
                     type = bina.Hendese.GeometryType,
-                    coordinates = GeoJsonConverter.GetCoordinates(bina.Hendese)
+                    coordinates = GeoJsonConverter.GetPolygonCoordinates(bina.Hendese)
                 },
                 properties = new
                 {
@@ -45,6 +46,45 @@ namespace BuildingsAPI.Helpers
             return JsonConvert.SerializeObject(feature, settings);
         }
 
+        public static string ToGeoJson(this IEnumerable<Poi> pois)
+        {
+            var features = pois.Select(poi => new {
+                type = "Feature",
+                geometry = new
+                {
+                    type = poi.WkbGeometry.GeometryType,
+                    coordinates = poi.WkbGeometry.Coordinate
+                },
+                //Not all properties are mapped
+                properties = new
+                {
+                    addr_city = poi.AddrCity,                    
+                    addr_housenumber = poi.AddrHousenumber,
+                    addr_postcode = poi.AddrPostcode,
+                    addr_street = poi.AddrStreet,                                        
+                    name = poi.Name,
+                    phone = poi.Phone,
+                    website = poi.Website,
+                    opening_hours = poi.OpeningHours,                    
+                    index = poi.Index,
+                }
+            });
+
+
+            var featureCollection = new
+            {
+                type = "FeatureCollection",
+                features
+            };
+
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            return JsonConvert.SerializeObject(featureCollection, settings);                        
+        }
+
         public static string ToGeoJson(this IEnumerable<Bina> binas)
         {
             var features = binas.Select(bina => new
@@ -53,7 +93,7 @@ namespace BuildingsAPI.Helpers
                 geometry = new
                 {
                     type = bina.Hendese.GeometryType,
-                    coordinates = GeoJsonConverter.GetCoordinates(bina.Hendese)
+                    coordinates = GeoJsonConverter.GetPolygonCoordinates(bina.Hendese)
                 },
                 properties = new
                 {
@@ -81,12 +121,16 @@ namespace BuildingsAPI.Helpers
                 features
             };
 
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
 
-            return JsonConvert.SerializeObject(featureCollection);
+            return JsonConvert.SerializeObject(featureCollection, settings);            
         }
 
 
-        private static List<List<List<double>>> GetCoordinates(Geometry geometry)
+        private static List<List<List<double>>> GetPolygonCoordinates(Geometry geometry)
         {
 
             var coordinates = new List<List<List<double>>>();

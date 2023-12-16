@@ -43,8 +43,11 @@ namespace BuildingsAPI.Controllers
         {
             var building = await _context.Binas.FindAsync(new object[] { id });
 
+            var geometry = building.Hendese;
 
-            return Ok(building.ToGeoJson());
+            var pointsWithinBuilding = await _context.Pois.Where(p => p.WkbGeometry.Within(geometry)).ToListAsync();
+
+            return Ok(pointsWithinBuilding.ToGeoJson());
         }
 
         [HttpPut("{id}")]
@@ -57,8 +60,6 @@ namespace BuildingsAPI.Controllers
 
             return NoContent();
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> CreateBuilding([FromBody] GeoJsonFeature geoJsonFeature)

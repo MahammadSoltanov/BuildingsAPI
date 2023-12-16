@@ -1,6 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text.Json.Serialization;
 using NetTopologySuite.Geometries;
-using Newtonsoft.Json;
 
 namespace BuildingsAPI.Models;
 
@@ -10,19 +9,19 @@ public partial class Bina
 
     public Geometry Hendese { get; set; }
 
-    [JsonProperty("addr:city")]
+    [JsonPropertyName("addr:city")]
     public string AddrCity { get; set; }
 
-    [JsonProperty("addr:country")]
+    [JsonPropertyName("addr:country")]
     public string AddrCountry { get; set; }
 
-    [JsonProperty("addr:housenumber")]
+    [JsonPropertyName("addr:housenumber")]
     public string AddrHousenumber { get; set; }
 
-    [JsonProperty("addr:postcode")]
+    [JsonPropertyName("addr:postcode")]
     public string AddrPostcode { get; set; }
 
-    [JsonProperty("addr:street")]
+    [JsonPropertyName("addr:street")]
     public string AddrStreet { get; set; }
 
     public string Amenity { get; set; }
@@ -35,7 +34,7 @@ public partial class Bina
 
     public string Building { get; set; }
 
-    [JsonProperty("building:levels")]
+    [JsonPropertyName("building:levels")]
     public string BuildingLevels { get; set; }
 
     public string Charge { get; set; }
@@ -53,13 +52,13 @@ public partial class Bina
     public string Name { get; set; }
 
     public string NameAr { get; set; }
-    [JsonProperty("name:az")]
+    [JsonPropertyName("name:az")]
     public string NameAz { get; set; }
 
-    [JsonProperty("name:en")]
+    [JsonPropertyName("name:en")]
     public string NameEn { get; set; }
 
-    [JsonProperty("name:ru")]
+    [JsonPropertyName("name:ru")]
     public string NameRu { get; set; }
 
     public string OpeningHours { get; set; }
